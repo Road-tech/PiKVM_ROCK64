@@ -1,0 +1,78 @@
+name: Build Armbian
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+env:
+  UPLOAD_IMAGE: true
+  CUSTOMIZATIOM_SCRIPT: userpatches/customize-image.sh
+  ARMBIAN_CHECK_FIRST_LOGIN: armbian-check-first-login.sh
+  AIMBIAN_FIRSTLOGIN: armbian-firstlogin
+  KERNEL_CONFIG: config
+  UPLOAD_RELEASE: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+
+    - name: Download source code
+      run: |
+        pwd
+        echo   $GITHUB_WORKSPACE
+        # git clone --depth=1 --branch=main https://github.com/armbian/build
+        git clone --depth=1 --branch=main https://github.com/Road-tech/armbian-build.git build
+     
+    - name: Parepre Armbian Env
+      run: |
+        cd build
+        ./compile.sh build BOARD=nanopineo BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
+   
+    - name: Add customize-image.sh
+      id: build
+      run: |
+        cd build
+        echo "cp userpatches/customize-image.sh and compile"
+        [ -e $CUSTOMIZATIOM_SCRIPT ] && mv -f $GITHUB_WORKSPACE/$CUSTOMIZATIOM_SCRIPT userpatches/customize-image.sh
+        ./compile.sh build BOARD=nanopineo BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
+        cd  output/images
+        tar -Jcvf /tmp/nanopi_neo_image.tar.xz  *.img    
+        #tar -vczf /tmp/nanopi_neo_image.tar.gz *.img  
+        echo "::set-output name=status::success"
+
+    - name: Upload Armbian image
+      uses: actions/upload-artifact@master
+      if: steps.build.outputs.status == 'success'
+      with:
+        name: Nanopi_neo_image
+        path: /tmp/nanopi_neo_image.tar.xz
+        
+    - name: Generate release tag
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
+        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+        echo "::set-output name=status::success"
+    
+    - name: Upload image to release
+      uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        files: /tmp/nanopi_neo_image.tar.xz 
