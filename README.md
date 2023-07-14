@@ -1,5 +1,7 @@
 # PiKVM_Prebuild_image_ROCK64
 
+此固件未测试，预计会有OTG问题，谨慎使用！
+
 这是一个ROCK64的预构建镜像，该镜像可以让Pikvm运行在ROCK64上。
 
 [PiKVM](https://github.com/pikvm/pikvm)是一个基于树莓派的开源、低成本的IP-KVM系统。不同于向日葵、teamviewer、Todesk这类远程控制软件，他可以实现硬件层的远程控制管理各类设备。  
