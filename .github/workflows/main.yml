@@ -7,6 +7,7 @@ on:
 env:
   UPLOAD_IMAGE: true
   CUSTOMIZATIOM_SCRIPT: userpatches/customize-image.sh
+  MSD_PATCH: userpatches/2002-usb-gadget-f_mass_storage-forced-eject.patch
   ARMBIAN_CHECK_FIRST_LOGIN: armbian-check-first-login.sh
   AIMBIAN_FIRSTLOGIN: armbian-firstlogin
   KERNEL_CONFIG: config
@@ -47,6 +48,7 @@ jobs:
       run: |
         cd build
         echo "cp userpatches/customize-image.sh and compile"
+        [ -e $MSD_PATCH ] && mv -f $GITHUB_WORKSPACE/$MSD_PATCH userpatches/kernel/rockchip64-current/2002-usb-gadget-f_mass_storage-forced-eject.patch
         [ -e $CUSTOMIZATIOM_SCRIPT ] && mv -f $GITHUB_WORKSPACE/$CUSTOMIZATIOM_SCRIPT userpatches/customize-image.sh
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
         cd  output/images
