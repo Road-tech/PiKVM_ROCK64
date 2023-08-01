@@ -45,8 +45,6 @@ jobs:
         touch 2002-usb-gadget-f_mass_storage-forced-eject.patch
         cat $GITHUB_WORKSPACE/$MSD_PATCH > 2002-usb-gadget-f_mass_storage-forced-eject.patch
         # [ -e $MSD_PATCH ] && cp $GITHUB_WORKSPACE/$MSD_PATCH 2002-usb-gadget-f_mass_storage-forced-eject.patch
-        echo userpatches/kernel/rockchip64-current ls
-        ls
         cd -
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
    
@@ -59,7 +57,7 @@ jobs:
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
         cd  output/images
         tar -Jcvf /tmp/Rock64_image.tar.xz  *.img    
-        # echo "::set-output name=status::success"
+        echo "::set-output name=status::success"
 
     - name: Upload Armbian image
       uses: actions/upload-artifact@master
