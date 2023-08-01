@@ -41,7 +41,7 @@ jobs:
     - name: Parepre Armbian Env
       run: |
         cd build
-        mkdir userpatches/kernel/rockchip64-current
+        mkdir -p userpatches/kernel/rockchip64-current
         [ -e $MSD_PATCH ] && mv -f $GITHUB_WORKSPACE/$MSD_PATCH userpatches/kernel/rockchip64-current/2002-usb-gadget-f_mass_storage-forced-eject.patch
         cd userpatches/kernel/rockchip64-current && ls
         cd -
