@@ -42,8 +42,9 @@ jobs:
       run: |
         cd build
         mkdir -p userpatches/kernel/rockchip64-current && cd userpatches/kernel/rockchip64-current 
-        cat $GITHUB_WORKSPACE/$MSD_PATCH
-        [ -e $MSD_PATCH ] && cp $GITHUB_WORKSPACE/$MSD_PATCH 2002-usb-gadget-f_mass_storage-forced-eject.patch
+        touch 2002-usb-gadget-f_mass_storage-forced-eject.patch
+        cat $GITHUB_WORKSPACE/$MSD_PATCH > 2002-usb-gadget-f_mass_storage-forced-eject.patch
+        # [ -e $MSD_PATCH ] && cp $GITHUB_WORKSPACE/$MSD_PATCH 2002-usb-gadget-f_mass_storage-forced-eject.patch
         echo userpatches/kernel/rockchip64-current ls
         ls
         cd -
