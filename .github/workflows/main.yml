@@ -41,17 +41,13 @@ jobs:
     - name: Parepre Armbian Env
       run: |
         cd build
-        mkdir -p userpatches/kernel/rockchip64-current
-        [ -e $MSD_PATCH ] && mv -f $GITHUB_WORKSPACE/$MSD_PATCH userpatches/kernel/rockchip64-current/2002-usb-gadget-f_mass_storage-forced-eject.patch
-        cd userpatches/kernel/rockchip64-current 
+        mkdir -p userpatches/kernel/rockchip64-current && cd userpatches/kernel/rockchip64-current 
+        cat $GITHUB_WORKSPACE/$MSD_PATCH
+        [ -e $MSD_PATCH ] && cp $GITHUB_WORKSPACE/$MSD_PATCH 2002-usb-gadget-f_mass_storage-forced-eject.patch
         echo userpatches/kernel/rockchip64-current ls
         ls
         cd -
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
-        cd userpatches/kernel/rockchip64-current 
-        echo userpatches/kernel/rockchip64-current ls
-        ls
-        cd -
    
     - name: Add customize-image.sh
       id: build
@@ -62,7 +58,7 @@ jobs:
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
         cd  output/images
         tar -Jcvf /tmp/Rock64_image.tar.xz  *.img    
-        echo "::set-output name=status::success"
+        # echo "::set-output name=status::success"
 
     - name: Upload Armbian image
       uses: actions/upload-artifact@master
