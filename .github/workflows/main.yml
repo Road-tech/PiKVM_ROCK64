@@ -41,6 +41,9 @@ jobs:
     - name: Parepre Armbian Env
       run: |
         cd build
+        [ -e $MSD_PATCH ] && mv -f $GITHUB_WORKSPACE/$MSD_PATCH userpatches/kernel/rockchip64-current/2002-usb-gadget-f_mass_storage-forced-eject.patch
+        cd userpatches/kernel/rockchip64-current && ls
+        cd -
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
    
     - name: Add customize-image.sh
@@ -48,7 +51,6 @@ jobs:
       run: |
         cd build
         echo "cp userpatches/customize-image.sh and compile"
-        [ -e $MSD_PATCH ] && mv -f $GITHUB_WORKSPACE/$MSD_PATCH userpatches/kernel/rockchip64-current/2002-usb-gadget-f_mass_storage-forced-eject.patch
         [ -e $CUSTOMIZATIOM_SCRIPT ] && mv -f $GITHUB_WORKSPACE/$CUSTOMIZATIOM_SCRIPT userpatches/customize-image.sh
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
         cd  output/images
