@@ -45,7 +45,7 @@ jobs:
         #touch 2002-usb-gadget-f_mass_storage-forced-eject.patch
         #cat $GITHUB_WORKSPACE/$MSD_PATCH > 2002-usb-gadget-f_mass_storage-forced-eject.patch
         # [ -e $MSD_PATCH ] && cp $GITHUB_WORKSPACE/$MSD_PATCH 2002-usb-gadget-f_mass_storage-forced-eject.patch
-        cd -
+        #cd -
         ./compile.sh build BOARD=rock64 BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy KERNEL_GIT=full
    
     - name: Add customize-image.sh
