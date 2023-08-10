@@ -41,12 +41,12 @@ jobs:
     - name: Parepre Armbian Env
       run: |
         cd build
-        mkdir -p userpatches/kernel/rockchip64-current && cd userpatches/kernel/rockchip64-current 
-        touch 2002-usb-gadget-f_mass_storage-forced-eject.patch
-        cat $GITHUB_WORKSPACE/$MSD_PATCH > 2002-usb-gadget-f_mass_storage-forced-eject.patch
+        #mkdir -p userpatches/kernel/rockchip64-current && cd userpatches/kernel/rockchip64-current 
+        #touch 2002-usb-gadget-f_mass_storage-forced-eject.patch
+        #cat $GITHUB_WORKSPACE/$MSD_PATCH > 2002-usb-gadget-f_mass_storage-forced-eject.patch
         # [ -e $MSD_PATCH ] && cp $GITHUB_WORKSPACE/$MSD_PATCH 2002-usb-gadget-f_mass_storage-forced-eject.patch
         cd -
-        ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
+        ./compile.sh build BOARD=rock64 BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy KERNEL_GIT=full
    
     - name: Add customize-image.sh
       id: build
@@ -54,7 +54,7 @@ jobs:
         cd build
         echo "cp userpatches/customize-image.sh and compile"
         [ -e $CUSTOMIZATIOM_SCRIPT ] && mv -f $GITHUB_WORKSPACE/$CUSTOMIZATIOM_SCRIPT userpatches/customize-image.sh
-        ./compile.sh build BOARD=rock64 BRANCH=current BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy BUILD_DESKTOP=no
+        ./compile.sh build BOARD=rock64 BRANCH=current BUILD_DESKTOP=no BUILD_MINIMAL=no KERNEL_CONFIGURE=no RELEASE=jammy KERNEL_GIT=full
         cd  output/images
         tar -Jcvf /tmp/Rock64_image.tar.xz  *.img    
         echo "::set-output name=status::success"
